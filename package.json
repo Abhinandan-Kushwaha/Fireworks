@@ -1,7 +1,6 @@
 {
-  "name": "Fireworks",
-  "version": "0.0.1",
-  "private": true,
+  "name": "react-native-fireworks",
+  "version": "0.0.2",
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
@@ -25,5 +24,23 @@
   },
   "jest": {
     "preset": "react-native"
-  }
+  },
+  "description": "A customizable firework like animation that can be used as a component in a react native project",
+  "main": "Fireworks.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abhinandan-Kushwaha/Fireworks.git"
+  },
+  "keywords": [
+    "fireworks",
+    "firework",
+    "cracker",
+    "firecracker"
+  ],
+  "author": "Abhinandan Kushwaha",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Abhinandan-Kushwaha/Fireworks/issues"
+  },
+  "homepage": "https://github.com/Abhinandan-Kushwaha/Fireworks#readme"
 }
