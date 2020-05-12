@@ -1,6 +1,6 @@
 {
   "name": "react-native-fireworks",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
