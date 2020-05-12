@@ -2,6 +2,8 @@
 
 A customizable firework like animation that can be used as a component in a react native project.
 
+![Demo GIF of fireworks being rendered](./fireworks.gif)
+
 # Installation
 
 ```javascript
