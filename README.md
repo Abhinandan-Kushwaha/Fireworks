@@ -23,7 +23,7 @@ Minimal code to ignite the fireworks 🎇
 <Fireworks/>
 ```
 
-The parameters like speed of the explosion, density of fireworks and the colors can be customized
+The parameters like the speed of the explosions, the density of fireworks and the colors of the fire can be customized.
 
 ```javascript
 <Fireworks
