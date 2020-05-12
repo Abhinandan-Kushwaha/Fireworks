@@ -46,5 +46,5 @@ It denotes the number of crackers exploding simultaneously.
 It is a number between 1 and 10. The default value is 5.
 
 <b>3.  colors</b><br/>
-The fireworkers explode into colorful light crystals. You can set the colors of you choice by passing their hex codes or rgb values (as Strings) in an array.
+The fireworks explode into colorful light crystals. You can set the colors of you choice by passing their hex codes or rgb values (as Strings) in an array.
 If you don't pass any colors, luckily you will get light crystals of all possible colors ranging from <b><i>'rgb(0,0,0)'</i></b> to  <b><i>'rgb(255,255,255)'</i></b>.
