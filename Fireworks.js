@@ -7,7 +7,7 @@ let skyZindex;
 let explosionIterations;
 let count = 0;
 
-export default class Crackers extends Component {
+export default class Fireworks extends Component {
   constructor(props) {
     super(props);
     this.state = {
