@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Dimensions, StyleSheet, View, Animated, Easing } from 'react-native';
 
-const height = Dimensions.get('window').height;
-const width = Dimensions.get('window').width;
+let skyHeight;
+let skyWidth;
+let skyZindex;
+let explosionIterations;
+let count = 0;
 
 export default class Crackers extends Component {
   constructor(props) {
@@ -16,10 +19,31 @@ export default class Crackers extends Component {
   }
 
   componentWillMount = () => {
+    const { height, width, zIndex, iterations } = this.props;
+    if (height && typeof height === 'number') {
+      skyHeight = height;
+    } else {
+      skyHeight = Dimensions.get('window').height;
+    }
+    if (width && typeof width === 'number') {
+      skyWidth = width;
+    } else {
+      skyWidth = Dimensions.get('window').width;
+    }
+    if (zIndex && typeof zIndex === 'number') {
+      skyZindex = zIndex;
+    } else {
+      skyZindex = 10;
+    }
+    if (iterations && typeof iterations === 'number') {
+      explosionIterations = iterations;
+    } else {
+      explosionIterations = 'infinite';
+    }
     this.setExplosionSpots();
   };
 
-  setExplosionSpots = () => {
+  setExplosionSpots = (shouldUpdateCounts) => {
     let { density } = this.props;
     if (density && typeof density === 'number' && density > 0) {
       if (density > 10) {
@@ -32,12 +56,22 @@ export default class Crackers extends Component {
       y = [],
       i;
     for (i = 0; i < density; i++) {
-      x[i] = this.getRandom(width + 200) - 100;
-      y[i] = this.getRandom(height + 200) - 100;
+      x[i] = this.getRandom(skyWidth);
+      y[i] = this.getRandom(skyHeight);
     }
     this.setState({ x, y }, () => {
-      this.animateOpacity();
-      this.animateTop();
+      if (explosionIterations && typeof explosionIterations === 'number') {
+        if (shouldUpdateCounts) {
+          count++;
+        }
+        if (count < explosionIterations) {
+          this.animateOpacity();
+          this.animateTop();
+        }
+      } else {
+        this.animateOpacity();
+        this.animateTop();
+      }
     });
   };
 
@@ -51,7 +85,7 @@ export default class Crackers extends Component {
       useNativeDriver: false,
     }).start(() =>
       setTimeout(() => {
-        this.setExplosionSpots();
+        this.setExplosionSpots(true);
       }),
     );
   }
@@ -135,8 +169,8 @@ export default class Crackers extends Component {
           return (
             <View
               style={{
-                top: x[index],
-                left: y[index],
+                top: y[index],
+                left: x[index],
               }}>
               {this.exploasionBox()}
             </View>
@@ -150,15 +184,15 @@ export default class Crackers extends Component {
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    zIndex: 11,
-    width: width,
-    height: height,
+    zIndex: skyZindex,
+    width: skyWidth,
+    height: skyHeight,
   },
   explosionBoundary: {
     position: 'absolute',
     height: 300,
     width: 300,
-    zIndex: 10,
+    zIndex: skyZindex,
   },
   ball: {
     position: 'absolute',
