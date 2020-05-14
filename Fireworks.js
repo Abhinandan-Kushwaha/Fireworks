@@ -11,11 +11,11 @@ export default class Fireworks extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      x: [20, 240],
-      y: [40, 300],
+      x: [],
+      y: [],
     };
-    this.animatedOpacity = new Animated.Value(1);
-    this.animatedTop = new Animated.Value(0);
+    this.fadingOpacity = new Animated.Value(1);
+    this.movingBall = new Animated.Value(0);
   }
 
   componentWillMount = () => {
@@ -66,34 +66,32 @@ export default class Fireworks extends Component {
         }
         if (count < explosionIterations) {
           this.animateOpacity();
-          this.animateTop();
+          this.animateBall();
         }
       } else {
         this.animateOpacity();
-        this.animateTop();
+        this.animateBall();
       }
     });
   };
 
   animateOpacity() {
     const { speed } = this.props;
-    this.animatedOpacity.setValue(1);
-    Animated.timing(this.animatedOpacity, {
+    this.fadingOpacity.setValue(1);
+    Animated.timing(this.fadingOpacity, {
       toValue: 0,
       duration: speed === 1 ? 900 : speed === 3 ? 500 : 700,
       easing: Easing.ease,
       useNativeDriver: false,
     }).start(() =>
-      setTimeout(() => {
-        this.setExplosionSpots(true);
-      }),
+      this.setExplosionSpots(true)
     );
   }
 
-  animateTop() {
+  animateBall() {
     const { speed } = this.props;
-    this.animatedTop.setValue(0);
-    Animated.timing(this.animatedTop, {
+    this.movingBall.setValue(0);
+    Animated.timing(this.movingBall, {
       toValue: 1,
       duration: speed === 1 ? 900 : speed === 3 ? 500 : 700,
       easing: Easing.ease,
@@ -105,7 +103,7 @@ export default class Fireworks extends Component {
     return Math.round(Math.random() * n);
   };
 
-  exploasionBox = () => {
+  explosionBox = () => {
     const { colors } = this.props;
     let balls = [],
       randomTops = [],
@@ -113,11 +111,11 @@ export default class Fireworks extends Component {
       randomColors = [];
     for (let i = 0; i < 30; i++) {
       balls.push('');
-      randomTops[i] = this.animatedTop.interpolate({
+      randomTops[i] = this.movingBall.interpolate({
         inputRange: [0, 1],
         outputRange: [100, this.getRandom(200)],
       });
-      randomLefts[i] = this.animatedTop.interpolate({
+      randomLefts[i] = this.movingBall.interpolate({
         inputRange: [0, 1],
         outputRange: [100, this.getRandom(200)],
       });
@@ -136,7 +134,7 @@ export default class Fireworks extends Component {
           ')';
       }
     }
-    let myOpacity = this.animatedOpacity.interpolate({
+    let ballOpacity = this.fadingOpacity.interpolate({
       inputRange: [0, 1],
       outputRange: [0, 1],
     });
@@ -151,7 +149,7 @@ export default class Fireworks extends Component {
                 {
                   top: randomTops[index],
                   left: randomLefts[index],
-                  opacity: myOpacity,
+                  opacity: ballOpacity,
                   backgroundColor: color || randomColors[index],
                 },
               ]}
@@ -163,27 +161,33 @@ export default class Fireworks extends Component {
   };
   render() {
     const { x, y } = this.state;
-    return (
-      <View style={styles.container}>
-        {x.map((xItem, index) => {
-          return (
-            <View
-              style={{
-                top: y[index],
-                left: x[index],
-              }}>
-              {this.exploasionBox()}
-            </View>
-          );
-        })}
-      </View>
-    );
+    const { iterations } = this.props;
+    if (!iterations || count < iterations) {
+      return (
+        <View style={styles.container}>
+          {x.map((xItem, index) => {
+            return (
+              <View
+                style={{
+                  top: y[index],
+                  left: x[index],
+                }}>
+                {this.explosionBox()}
+              </View>
+            );
+          })}
+        </View>
+      );
+    }
+    return null;
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
+    top: -100,
+    left: -100,
     zIndex: skyZindex,
     width: skyWidth,
     height: skyHeight,
