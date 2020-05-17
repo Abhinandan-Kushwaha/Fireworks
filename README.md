@@ -36,11 +36,12 @@ The parameters like the speed of the explosions, the density of fireworks and th
   height={150}
   width={100}
   zIndex={2}
+  circular={true}
 />
 ```
 
 # Props
-There are 7 props and all the 7 are <b>optional.</b><br/><br/>
+There are 8 props and all the 8 are <b>optional.</b><br/><br/>
 ### 1.  speed
 It denotes how fast will an individual cracker explode.
 It is a number with possible values- 1,2 and 3. 1 is for the slowest and 3 for the fastest. The default value is 2.
@@ -66,3 +67,7 @@ Width of the area in which fireworks are rendered. Its default value is the widt
 ### 7.  zIndex
 zIndex of the Firework component. Its default value is 10.
 
+### 8. circular
+When set to true, the crackers burst making a circle as shown below. The default value is false.
+
+![Demo GIF of circular fireworks being rendered](./circular.gif)
