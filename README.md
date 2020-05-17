@@ -68,6 +68,6 @@ Width of the area in which fireworks are rendered. Its default value is the widt
 zIndex of the Firework component. Its default value is 10.
 
 ### 8. circular
-When set to true, the crackers burst making a circle as shown below. The default value is false.
+When set to true, the crackers burst making a circle as shown below. The default value is false.<br/><br/>
 
 ![Demo GIF of circular fireworks being rendered](./circular.gif)
