@@ -144,11 +144,11 @@ export default class Fireworks extends Component {
     const { circular, iterations } = this.props;
     let ballSize = this.movingBall.interpolate({
       inputRange: [0, 1],
-      outputRange: [0, 20]
+      outputRange: [0, 12]
     });
     let ballRadius = this.movingBall.interpolate({
       inputRange: [0, 1],
-      outputRange: [0, 10]
+      outputRange: [0, 6]
     });
     let balls = [],
       randomTops = [],
@@ -245,8 +245,8 @@ const styles = StyleSheet.create({
   },
   explosionBoundary: {
     position: 'absolute',
-    height: 300,
-    width: 300,
+    height: 200,
+    width: 200,
     zIndex: skyZindex,
   },
   ball: {
