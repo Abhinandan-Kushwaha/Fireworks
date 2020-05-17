@@ -6,6 +6,8 @@ let skyWidth;
 let skyZindex;
 let explosionIterations;
 let count = 0;
+let yPositions = [];
+let xPositions = [];
 
 export default class Fireworks extends Component {
   constructor(props) {
@@ -19,7 +21,10 @@ export default class Fireworks extends Component {
   }
 
   componentWillMount = () => {
-    const { height, width, zIndex, iterations } = this.props;
+    const { height, width, zIndex, iterations, circular } = this.props;
+    if (circular) {
+      this.fillXYpositions();
+    }
     if (height && typeof height === 'number') {
       skyHeight = height;
     } else {
@@ -42,6 +47,21 @@ export default class Fireworks extends Component {
     }
     this.setExplosionSpots();
   };
+
+  fillXYpositions = () => {
+    let x, y;
+    for (let i = 0; i <= 5; i++) {
+      x = i * i * 8;
+      xPositions[i] = x;
+      xPositions[i + 5] = x;
+      xPositions[i + 10] = 200 - x;
+      xPositions[i + 15] = 200 - x;
+      yPositions[i] = 100 - (Math.sqrt(10000 - (x - 100) * (x - 100)));
+      yPositions[i + 5] = 100 + (Math.sqrt(10000 - (x - 100) * (x - 100)));
+      yPositions[i + 10] = 100 - (Math.sqrt(10000 - (x - 100) * (x - 100)));
+      yPositions[i + 15] = 100 + (Math.sqrt(10000 - (x - 100) * (x - 100)));
+    }
+  }
 
   setExplosionSpots = (shouldUpdateCounts) => {
     let { density } = this.props;
@@ -103,61 +123,92 @@ export default class Fireworks extends Component {
     return Math.round(Math.random() * n);
   };
 
-  explosionBox = () => {
+  getRandomColors = () => {
     const { colors } = this.props;
+    if (colors && colors.length > 0) {
+      let l = colors.length - 1;
+      let n = Math.round(Math.random() * l);
+      return colors[n];
+    } else {
+      return 'rgb(' +
+        this.getRandom(255) +
+        ',' +
+        this.getRandom(255) +
+        ',' +
+        this.getRandom(255) +
+        ')';
+    }
+  }
+
+  explosionBox = (color) => {
+    const { circular, iterations } = this.props;
+    let ballSize = this.movingBall.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 20]
+    });
+    let ballRadius = this.movingBall.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, 10]
+    });
     let balls = [],
       randomTops = [],
       randomLefts = [],
-      randomColors = [];
-    for (let i = 0; i < 30; i++) {
+      x, y, loopCount;
+    loopCount = circular ? 20 : 30;
+    for (let i = 0; i <= loopCount; i++) {
       balls.push('');
-      randomTops[i] = this.movingBall.interpolate({
-        inputRange: [0, 1],
-        outputRange: [100, this.getRandom(200)],
-      });
-      randomLefts[i] = this.movingBall.interpolate({
-        inputRange: [0, 1],
-        outputRange: [100, this.getRandom(200)],
-      });
-      if (colors && colors.length > 0) {
-        let l = colors.length - 1;
-        let n = Math.round(Math.random() * l);
-        randomColors[i] = colors[n];
-      } else {
-        randomColors[i] =
-          'rgb(' +
-          this.getRandom(255) +
-          ',' +
-          this.getRandom(255) +
-          ',' +
-          this.getRandom(255) +
-          ')';
+      if (circular) {
+        x = xPositions[i];
+        y = yPositions[i];
+        randomTops[i] = this.movingBall.interpolate({
+          inputRange: [0, 1],
+          outputRange: [100, y]
+        });
+        randomLefts[i] = this.movingBall.interpolate({
+          inputRange: [0, 1],
+          outputRange: [100, x]
+        });
+      }
+      else {
+        randomTops[i] = this.movingBall.interpolate({
+          inputRange: [0, 1],
+          outputRange: [100, this.getRandom(200)],
+        });
+        randomLefts[i] = this.movingBall.interpolate({
+          inputRange: [0, 1],
+          outputRange: [100, this.getRandom(200)],
+        });
       }
     }
     let ballOpacity = this.fadingOpacity.interpolate({
       inputRange: [0, 1],
       outputRange: [0, 1],
     });
-    const { color } = this.props;
-    return (
-      <View style={styles.explosionBoundary}>
-        {balls.map((ball, index) => {
-          return (
-            <Animated.View
-              style={[
-                styles.ball,
-                {
-                  top: randomTops[index],
-                  left: randomLefts[index],
-                  opacity: ballOpacity,
-                  backgroundColor: color || randomColors[index],
-                },
-              ]}
-            />
-          );
-        })}
-      </View>
-    );
+    if (!iterations || count < iterations - 1) {
+      return (
+        <View style={styles.explosionBoundary}>
+          {balls.map((ball, index) => {
+            return (
+              <Animated.View
+                style={[
+                  styles.ball,
+                  {
+                    height: circular ? ballSize : 7,
+                    width: circular ? ballSize : 7,
+                    borderRadius: circular ? ballRadius : 3,
+                    top: randomTops[index],
+                    left: randomLefts[index],
+                    opacity: circular ? 1 : ballOpacity,
+                    backgroundColor: color || this.getRandomColors(),
+                  },
+                ]}
+              />
+            );
+          })}
+        </View>
+      );
+    }
+    return null;
   };
   render() {
     const { x, y } = this.state;
@@ -172,7 +223,7 @@ export default class Fireworks extends Component {
                   top: y[index],
                   left: x[index],
                 }}>
-                {this.explosionBox()}
+                {this.explosionBox(this.getRandomColors())}
               </View>
             );
           })}
@@ -200,8 +251,6 @@ const styles = StyleSheet.create({
   },
   ball: {
     position: 'absolute',
-    height: 7,
-    width: 7,
-    borderRadius: 3,
   },
 });
+

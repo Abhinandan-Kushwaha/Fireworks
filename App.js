@@ -7,13 +7,14 @@ const { height, width } = Dimensions.get('window');
 export default class App extends React.PureComponent {
     render() {
         return <Fireworks
-            speed={3}
+            speed={2}
             density={8}
             colors={['#ff0', '#ff3', '#cc0', '#ff4500', '#ff6347']}
             iterations={15}
             height={height}
             width={width}
             zIndex={1}
+            circular={false}
         />
     }
 }
